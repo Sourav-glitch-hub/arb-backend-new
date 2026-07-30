@@ -13,6 +13,11 @@ let serviceAccount;
 if (process.env.FIREBASE_SERVICE_ACCOUNT) {
   // Render-এর লাইভ সার্ভারের জন্য (Environment Variable থেকে JSON পার্স করবে)
   serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  
+  // ⚠️ FIX: Private Key-এর escaped newline (\\n) গুলোকে আসল newline (\n)-এ পরিবর্তন করবে
+  if (serviceAccount.private_key) {
+    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+  }
 } else {
   // লোকাল কম্পিউটারের জন্য (ফিজিক্যাল ফাইল থেকে লোড করবে)
   serviceAccount = require('./serviceAccountKey.json');
